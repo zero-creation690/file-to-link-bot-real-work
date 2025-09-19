@@ -23,26 +23,44 @@ app = Client(
 @app.on_message(filters.private & filters.media)
 async def handle_file_upload(client: Client, message: Message):
     """
-    Handles file uploads, forwards to a bin channel, and provides a permanent link.
+    Handles file uploads (documents, videos, photos, audio), forwards to a bin channel,
+    and provides a permanent link.
     """
-    logging.info(f"Received file from user {message.from_user.id}")
+    logging.info(f"Received media from user {message.from_user.id}")
+
+    # Check for any media type before proceeding
+    if not (message.document or message.video or message.photo or message.audio):
+        await message.reply_text("This is not a supported file type. Please send a document, video, photo, or audio file.")
+        logging.warning("Received an unsupported media type.")
+        return
+
     try:
+        # Forward the file to the BIN_CHANNEL.
         sent_message = await client.forward_messages(
             chat_id=BIN_CHANNEL,
             from_chat_id=message.chat.id,
             message_ids=message.message_id
         )
-        
+
+        # Ensure a valid message object was returned from the API call
+        if not sent_message or not hasattr(sent_message, 'message_id'):
+            logging.error("Forwarding message failed. The returned object has no 'message_id'.")
+            await message.reply_text("An error occurred while storing your file. Please check if the bot has permission to post in the storage channel.")
+            return
+
         bot_username = (await client.get_me()).username
         permanent_link = f"https://t.me/{bot_username}?start=file_{sent_message.message_id}"
         
+        # Reply to the user with the link.
         await message.reply_text(
             f"✅ **File uploaded successfully!**\n\nYour permanent link is ready:\n🔗 {permanent_link}",
             disable_web_page_preview=True,
             quote=True
         )
         logging.info(f"Generated link for file ID {sent_message.message_id}")
+
     except Exception as e:
+        # Catch any errors during the process and inform the user.
         logging.error(f"Error handling file upload: {e}")
         await message.reply_text(f"An error occurred: `{e}`")
 
@@ -78,4 +96,3 @@ async def handle_start_command(client: Client, message: Message):
 if __name__ == "__main__":
     logging.info("Starting bot...")
     app.run()
-
