@@ -6,27 +6,12 @@ import logging
 # Set up basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-# Get credentials from environment variables.
-# The `or None` part ensures the script doesn't crash if a variable is missing,
-# but the `int()` conversion will still raise an error, which is good for debugging.
-API_ID = os.environ.get("API_ID")
-API_HASH = os.environ.get("API_HASH")
-BOT_TOKEN = os.environ.get("BOT_TOKEN")
-BIN_CHANNEL = os.environ.get("BIN_CHANNEL")
-
-# Validate required environment variables
-if not all([API_ID, API_HASH, BOT_TOKEN, BIN_CHANNEL]):
-    logging.error("One or more required environment variables are missing.")
-    # Exiting with code 1 will tell Koyeb that the application failed to start.
-    exit(1)
-
-# Convert string IDs to integers
-try:
-    API_ID = int(API_ID)
-    BIN_CHANNEL = int(BIN_CHANNEL)
-except (ValueError, TypeError) as e:
-    logging.error(f"Failed to convert API_ID or BIN_CHANNEL to integer: {e}")
-    exit(1)
+# Hardcoded credentials and IDs
+# WARNING: DO NOT share these values or upload to a public repository.
+API_ID = 20288994
+API_HASH = "d702614912f1ad370a0d18786002adbf"
+BOT_TOKEN = "8303908376:AAEL1dL0BjpmpbdYjZ5yQmgb1UJLa_OMbGk"
+BIN_CHANNEL = -1002995694885
 
 app = Client(
     "file_link_bot",
@@ -81,8 +66,16 @@ async def handle_start_command(client: Client, message: Message):
             logging.error(f"Error fetching file from link: {e}")
             await message.reply_text(f"I couldn't find that file. An error occurred: `{e}`")
     else:
-        await message.reply_text("Hello! Send me any file (up to 2GB) and I will generate a permanent link for it.")
+        # Welcome message for the regular /start command
+        welcome_message = (
+            "Hello! 👋\n\n"
+            "I'm a file-to-link bot. I can help you generate permanent links for your files.\n\n"
+            "Just send me any file (up to 2GB), and I will provide you with a unique link that you can share with anyone. "
+            "When someone clicks the link, I will send them the file instantly."
+        )
+        await message.reply_text(welcome_message)
 
 if __name__ == "__main__":
     logging.info("Starting bot...")
     app.run()
+
