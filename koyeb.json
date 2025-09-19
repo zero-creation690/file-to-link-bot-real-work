@@ -1,0 +1,35 @@
+// .koyeb.json
+
+{
+  "name": "your-bot-name",
+  "git": {
+    "repository": "your-github-username/your-repo-name",
+    "branch": "main"
+  },
+  "services": [
+    {
+      "name": "bot-service",
+      "type": "worker",
+      "ports": [],
+      "envs": [
+        {
+          "key": "API_ID",
+          "value": "20288994"
+        },
+        {
+          "key": "API_HASH",
+          "value": "d702614912f1ad370a0d18786002adbf"
+        },
+        {
+          "key": "BOT_TOKEN",
+          "value": "8303908376:AAEL1dL0BjpmpbdYjZ5yQmgb1UJLa_OMbGk"
+        },
+        {
+          "key": "BIN_CHANNEL",
+          "value": "-1002995694885"
+        }
+      ],
+      "run_command": "python main.py"
+    }
+  ]
+}
