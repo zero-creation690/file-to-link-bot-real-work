@@ -23,11 +23,10 @@ app = Client(
 @app.on_message(filters.private & filters.media)
 async def handle_file_upload(client: Client, message: Message):
     """
-    Handles file uploads (documents, videos, photos, audio), forwards to a bin channel,
-    and provides a permanent link.
+    Handles file uploads, forwards to a bin channel, and provides a permanent link.
     """
     logging.info(f"Received media from user {message.from_user.id}")
-
+    
     # Check for any media type before proceeding
     if not (message.document or message.video or message.photo or message.audio):
         await message.reply_text("This is not a supported file type. Please send a document, video, photo, or audio file.")
@@ -61,7 +60,7 @@ async def handle_file_upload(client: Client, message: Message):
 
     except Exception as e:
         # Catch any errors during the process and inform the user.
-        logging.error(f"Error handling file upload: {e}")
+        logging.error(f"An unexpected error occurred: {e}")
         await message.reply_text(f"An error occurred: `{e}`")
 
 @app.on_message(filters.private & filters.command("start"))
