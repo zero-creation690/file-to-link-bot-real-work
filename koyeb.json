@@ -1,7 +1,5 @@
-// .koyeb.json
-
 {
-  "name": "your-bot-name",
+  "name": "file-to-link-bot-real-work",
   "git": {
     "repository": "your-github-username/your-repo-name",
     "branch": "main"
